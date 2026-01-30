@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="info-section">
-                    <h3>Venue Details & Map 📍</h3>
+                    <h3>Venue Details & Map </h3>
                     <div class="venue-details">
                         <div>
                             <strong>Venue:</strong> Stade de France<br>
