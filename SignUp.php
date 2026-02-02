@@ -1,3 +1,25 @@
+<?php
+require_once 'AuthService.php';
+
+$auth = new AuthService();
+$error = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+    
+    $res = $auth->register($name, $email, $password, $confirm);
+    
+    if ($res === "REGISTER_SUCCESS") {
+        header("Location: Login.php");
+        exit;
+    } else {
+        $error = $res;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,56 +33,100 @@
     <header class="main-header">
         <div class="header-content">
             <div class="left-nav">
-                <a href="index.html" class="logo">TicketGeek</a>
+                <a href="index.php" class="logo">TicketGeek</a>
 
                 <nav>
-                    <a href="#">Concerts</a>
-                    <a href="#">Sports</a>
-                    <a href="#">Arts & Theatre</a>
-                    <a href="#">More</a>
+                    <a href="concerts.php">Concerts</a>
+                    <a href="sports.php">Sports</a>
+                    <a href="arts_theatre.php">Arts & Theatre</a>
+                    <a href="more.php">More</a>
                 </nav>
             </div>
 
             <div class="right-nav">
-                <a href="login.html" class="user-icon">Login / Sign Up</a>
+                <a href="Login.php" class="user-icon">Login / Sign Up</a>
+            </div>
+
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </header>
 
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()">
+        <div class="mobile-nav-links" onclick="event.stopPropagation()">
+            <a href="index.php" class="logo mobile-only" style="font-size: 28px; margin-bottom: 20px;">TicketGeek</a>
+            <a href="concerts.php">Concerts</a>
+            <a href="sports.php">Sports</a>
+            <a href="arts_theatre.php">Arts & Theatre</a>
+            <a href="more.php">More</a>
+            <hr style="width: 50%; border-color: #444; margin: 15px 0;">
+            <a href="Login.php" class="user-icon">Login / Sign Up</a>
+        </div>
+    </div>
+
+    <script>
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+    
+    function toggleMobileMenu() {
+        const hamburger = document.querySelector('.hamburger');
+        const overlay = document.getElementById('mobileNavOverlay');
+        hamburger.classList.toggle('active');
+        overlay.classList.toggle('active');
+        if (overlay.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+            document.body.style.overflowX = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+            document.body.style.overflowX = '';
+        }
+    }
+    </script>
+
     <div class="content-wrapper">
         <div class="auth-container">
+            <h2>Create Account</h2>
             
-            <h2>Create Your TicketGeek Account</h2>
-            
-            <form action="#" method="POST">
+            <form method="POST">
                 <div class="input-group">
-                    <label for="signup-name">Full Name</label>
-                    <input type="text" id="signup-name" class="auth-input" required>
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" class="auth-input" required>
                 </div>
                 <div class="input-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" class="auth-input" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="auth-input" required>
                 </div>
                 <div class="input-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" class="auth-input" required>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="auth-input" required>
                 </div>
                 <div class="input-group">
-                    <label for="signup-confirm">Confirm Password</label>
-                    <input type="password" id="signup-confirm" class="auth-input" required>
+                    <label for="confirm">Confirm Password</label>
+                    <input type="password" id="confirm" name="confirm_password" class="auth-input" required>
                 </div>
+
+                <?php if($error): ?>
+                    <p style="color: red; text-align: center; margin-bottom: 10px;"><?php echo $error; ?></p>
+                <?php endif; ?>
+
                 <button type="submit" class="auth-submit-btn">Sign Up</button>
             </form>
 
             <span class="switch-auth-link">
-                Already have an account? <a href="login.html">Login here</a>.
+                Already have an account? <a href="Login.php">Login here</a>.
             </span>
         </div>
     </div>
 
     <footer>
-        <p>Â© 2025 TicketGeek</p>
-        <a href="about-us.html">About Us</a> | <a href="faq.html">FAQ</a>
+        <p>&copy; 2025 TicketGeek</p>
+        <a href="AboutUs.php">About Us</a> | <a href="FAQ.php">FAQ</a> | <a href="ContactUs.php">Contact Us</a>
     </footer>
 
 </body>
